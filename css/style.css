@@ -1,0 +1,11 @@
+html,body{
+    font-family: 'Mali', cursive;
+}
+
+.carousel-item img{
+    width: auto;
+    height: 400px;
+    max-height: 400px;
+    margin: auto; 
+    display: block;
+    }
