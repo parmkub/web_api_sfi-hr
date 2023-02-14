@@ -4,6 +4,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
     require_once 'connect.php';
     //require_once 'connect-test.php';
+    $blogType = $_GET['blogType'];
 
 
     // $location = $_GET['location'];
@@ -11,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $sql = "SELECT
     id,publicize_title,thumnail
    FROM  sf_per_hr_publicize 
+   where PUBLICIZE_TYPE = '$blogType'
    ORDER BY 1 desc";
     $response = oci_parse($objConnect, $sql,);
     $output = null;

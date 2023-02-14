@@ -9,14 +9,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     // $location = $_GET['location'];
 
     $sql = "SELECT
-     a.*
-    FROM
-    (SELECT
-     *
-    FROM  sf_per_hr_publicize 
-    ORDER BY 1 desc)a
-    WHERE ROWNUM IN(1,2,3)
-    ORDER BY 1 desc";
+    a.*
+   FROM
+   (SELECT
+    *
+   FROM  sf_per_hr_publicize 
+   ORDER BY 1 desc)a
+   WHERE ROWNUM IN(1,2,3)
+   AND PUBLICIZE_TYPE = 'news'
+   ORDER BY 1 desc";
     $response = oci_parse($objConnect, $sql,);
     $output = null;
 

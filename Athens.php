@@ -17,28 +17,41 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     // WHERE v.employee_code = '$empCode'
     // AND v.resign_date IS NULL";
 
-    $sql ="SELECT 
-    f.user_id userid,
-    f.user_name username,
-    f.employee_code empcode,
-    f.position_group_code positiongroup,
-    f.position_name positiongroupname,
-    f.sect_code sectcode,
-    f.divi_code divicode,
-    f.depart_code departcode
-FROM sf_per_employees_fnduser_v f
-WHERE f.employee_code = '$empCode'
-AND f.resign_date IS NULL";
+//     $sql = "SELECT 
+//     f.user_id userid,
+//     f.user_name username,
+//     f.employee_code empcode,
+//     f.position_group_code positiongroup,
+//     f.position_name positiongroupname,
+//     f.sect_code sectcode,
+//     f.divi_code divicode,
+//     f.depart_code departcode
+// FROM sf_per_employees_fnduser_v f
+// WHERE f.employee_code = '$empCode'
+// AND f.resign_date IS NULL";
+
+    $sql = "select 
+'0000' userid,
+UPPER(f.eng_first_name)username,
+f.employee_code empcode,
+f.position_group_code positiongroup,
+f.position_name positiongroupname,
+f.sect_code sectcode,
+f.divi_code divicode,
+f.depart_code departcode
+FROM sf_per_employees_v f where employee_code = '$empCode'
+AND f.resign_date is null
+";
 
     $s = oci_parse($objConnect, $sql);
     $objExecute = oci_execute($s);
 
     if ($row = oci_fetch_assoc($s)) {
-        $result[] = $row ;
+        $result[] = $row;
         echo json_encode($result);
         oci_close($objConnect);
     } else {
-        
+
         echo 'Null';
         oci_close($objConnect);
     }
@@ -60,5 +73,5 @@ AND f.resign_date IS NULL";
     //     echo 'error'.$e;
     // }
     // oci_close($objConnect);
-   
+
 }
