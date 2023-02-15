@@ -2,8 +2,8 @@
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
-   // require_once 'connect.php';
-    require_once 'connect-test.php';
+    require_once 'connect.php';
+    //require_once 'connect-test.php';
     
 
     $code = $_GET['code'];
@@ -13,12 +13,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
     $sql = "SELECT 
     (SELECT MAX(b.absence_date)
-    FROM sf_per_absence_tmp b
+    FROM sf_per_absence_mobile b
     WHERE b.absence_document = a.absence_document) Max,
     (SELECT Min(b.absence_date)
-    FROM sf_per_absence_tmp b
+    FROM sf_per_absence_mobile b
     WHERE b.absence_document = a.absence_document) Min,
-    (SELECT COUNT(*) from sf_per_absence_tmp c
+    (SELECT COUNT(*) from sf_per_absence_mobile c
     WHERE c.absence_document = a.absence_document)day,
     a.employee_code,
     a.absence_code,
@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     a.absence_detail,
     a.ABSENCE_DOCUMENT,
     a.CREATION_DATE
-    FROM sf_per_absence_tmp a
+    FROM sf_per_absence_mobile a
     INNER JOIN sf_per_employees_v emp
     ON emp.employee_code = a.employee_code
     WHERE emp.position_group_code != '$positionGroupCode'

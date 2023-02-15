@@ -21,7 +21,7 @@
     FROM sfi.sf_per_employees_v empv
     WHERE empv.$positionGroup = '$positionCode'
     AND empv.resign_date IS NULL
-    ORDER BY empv.position_group_code DESC";
+    ORDER BY empv.position_group_code  DESC";
     
         $response = oci_parse($objConnect, $strSQL,);
 

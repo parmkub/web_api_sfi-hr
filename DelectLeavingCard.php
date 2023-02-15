@@ -2,12 +2,12 @@
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
-     //require_once 'connect.php';
-    require_once 'connect-test.php';
+     require_once 'connect.php';
+    //require_once 'connect-test.php';
     $leavDocument = $_GET['leavDocument'];
   
 
-    $sql = "DELETE FROM sfi.sf_per_absence_tmp a
+    $sql = "DELETE FROM sfi.sf_per_absence_mobile a
     WHERE a.absence_document = '$leavDocument'";
 
     $s = oci_parse($objConnect, $sql);
