@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     ON emp.employee_code = a.employee_code
     WHERE emp.position_group_code != '$positionGroupCode'
     AND emp.$namePosiyer = '$code'
-    -- AND a.absence_status != 3
+    -- AND a.absence_status > 2
     AND to_char(a.creation_date,'MM-YY')= to_char(SYSDATE,'MM-YY')
     GROUP BY a.employee_code,
     a.absence_code,
