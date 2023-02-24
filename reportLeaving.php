@@ -1,7 +1,5 @@
 <?php
 
-use JetBrains\PhpStorm\Language;
-
 require_once 'connect.php';
 ?>
 
@@ -27,37 +25,13 @@ require_once 'connect.php';
   <script src="sweetalert/unpkg/sweetalert.min.js"></script>
 
   <!-- <script type="text/javascript" src="jsPDF/jspdf.min.js"></script> -->
-  <script type="text/javascript" src="jsPDF/pdfmake.min.js"></script>
-  <script type="text/javascript" src="jsPDF/vfs_fonts.js"></script>
+
+  <script src="bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 
 
-  <script type="text/javascript">
-    function genPDF() {
 
-      var doc = new jsPDF();
-
-      doc.text('Hello world!', 10, 10);
-      doc.save('a4.pdf');
-    }
-
-    function Convert_HTML_TO_PDF() {
-      var doc = new jsPDF();
-      var elementHTML = document.querySelector("#contnet").innerHTML;
-      var specialElementHandlers = {
-        '#elementH': function(element, renderer) {
-          return true;
-        }
-      };
-      doc.fromHTML(elementHTML, 15, 15, {
-        'width': 170,
-        'elementHandlers': specialElementHandlers
-      });
-
-      // Save the PDF
-      doc.save('sample-document.pdf');
-    }
-  </script>
 
 
   <!-- <link href="jquery.datetimepicker.min.css" rel="stylesheet" /> -->
@@ -68,13 +42,11 @@ require_once 'connect.php';
 </head>
 
 <body>
-
-  <h1>jsPDF Demos</h1>
-  <a href="javascript:Convert_HTML_TO_PDF()">Download PDF</a>
+  <?php include 'selectLagit.php'; ?>
 
   <div id="contnet">
-    <div class="container col-6">
-      <div class="card">
+    <div class="container col-6 mt-5">
+      <div class="card regular shadow">
         <div class="card-header mt-4 text-center">
           <div>
             บริษัท ซีเฟรชอินดัสตรีจำกัด (มหาชน) 402 หมู่ 8 ตำบล ปากน้ำ อำเภอ เมือง จังหวัดชุมพร 86120
@@ -86,11 +58,19 @@ require_once 'connect.php';
         </div>
         <div class="card-body mt-2">
           <div class="text-center font-weight-bold">
-            <p class="font-weight-bold">ใบลา</p5>
+            <h4 class="font-weight-bold">ใบลากิจ</h4>
           </div>
-          <div class="text-end">
-            <p>วันที่...............................เดือน........................พ.ศ...................</p>
+          <div class="row mt-3">
+            <div class="col">
+              <p><?php echo 'เลขที่เอกสาร: ' . $documentNo ?></p>
+              <input type="hidden" id="documentNo" value="<?php echo $documentNo ?>">
+            </div>
+            <div class="col">
+              <p><?php echo 'วันที่ ' . $creationDate ?></p>
+            </div>
           </div>
+
+
           <div class="text-start">
             <p>
               เรียน ผู้บังคับบัญชาต้นสังกัด
@@ -100,38 +80,39 @@ require_once 'connect.php';
           <div class="row">
 
             <div class="text-start col-4">
-              <p>ข้าพเจ้า............................................</p>
+              <p><?php echo 'ข้าพเจ้า ' . $employeeName ?></p>
             </div>
             <div class="text-start col-3">
-              <p>รหัส...........................................</p>
+              <p><?php echo 'รหัสพนักงาน ' . $employeeCode ?></p>
             </div>
             <div class="text-start col-5">
-              <p>ตำแหน่ง........................................................................</p>
+              <p><?php echo 'ตำแหน่ง' . $positionName ?> </p>
             </div>
           </div>
           <div class="row">
 
             <div class="text-start col-4">
-              <p>แผนก..............................................</p>
+              <p><?php echo 'แผนก ' . $sectName ?></p>
             </div>
             <div class="text-start col-4">
-              <p>ส่วน................................................</p>
+              <p><?php echo 'ส่วน ' . $diviName ?></p>
             </div>
             <div class="text-start col-4">
-              <p>ฝ่าย...............................................</p>
+              <p><?php echo 'ฝ่าย ' . $departName ?></p>
             </div>
           </div>
 
         </div>
-        <div class="col ms-3">
+        <!-- <div class="col ms-3">
           <p class="text-sm-left">มีความประส่งขอลา </p>
         </div>
+
         <div class="row m-2 mt-0">
           <div class="col align-middle">
             <div class="input-group mb-3">
               <div>
                 <div>
-                  <input type="checkbox" aria-label="Checkbox for following text input">
+                  <input type="checkbox" aria-label="Checkbox for following text input" value="lagit" checked>
                 </div>
               </div>
               <p class="text-sm-left ms-2"> ลากิจธุระจำเป็น</p>
@@ -177,18 +158,237 @@ require_once 'connect.php';
               <p class="text-sm-left ms-2">อุบัติเหตุจากทำงาน</p>
             </div>
           </div>
+        </div> -->
 
-         
+        <div class="row">
+          <div class="col">
+            <div class="col mx-3">
+              <p>ประเภทการลา: </p><?php if ($absenceCode == '02') {
+                                    echo '<p style="color:green;">' . $absenceName . '</p>';
+                                  } else if ($absenceCode == 'AB') {
+                                    echo '<p style="color:#f72727;">' . $absenceName . '</p>';
+                                  }
+                                  ?>
+            </div>
 
+            <div class="col mx-3">
+              <input type="hidden" id="startDate" value="<?php echo $startDate ?>">
+              <input type="hidden" id="endDate" value="<?php echo $endDate ?>">
+              <p>ตั้งแต่ <?php echo $startDate ?> ถึง <?php echo $endDate ?> </p>
+              <p><?php echo 'จำนวนวันลา ' . $showCount ?></p>
+            </div>
+          </div>
+          <div class="col-4 ">
+            
+            <Img width="120px" class="regular shadow" src= "<?php echo $ImgUrl?>" ></Img> 
+      
+                                 
+          </div>
         </div>
 
+        <div id="diffDays"></div>
+
+
+        <div class="co-5 m-3">
+          <p>เหตุผล:</p>
+
+          <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="รายละเอียด" disabled>
+          <?php echo $detail ?>
+           </textarea>
+        </div>
+
+
+        <div class="row m-3 ">
+          <div class="col text-center ">
+            <p><?php echo 'ลงชื่อ ' . $review . ' ผู้ทบทวน' ?></p>
+
+          </div>
+
+          <div class="col  text-center">
+            <p><?php echo 'ลงชื่อ ' . $approve . ' ผู้ทบทวน' ?></p>
+
+          </div>
+        </div>
       </div>
 
 
+      <div class="row justify-content-center mt-3">
+        <div class="col-5 d-grid ">
+          <button id="btnNo" type="button" class="btn btn-info btn-xs " value='AbsenceCode Update'>ไม่อนุมัติ</button>
+        </div>
+        <div class="col-5 d-grid">
+          <button id="btnAprove" type="button" class="btn btn-primary btn-lg " value='AbsenceCode Update'>อนุมัติ</button>
+        </div>
+      </div>
 
-    </div>
+      <script type="text/javascript">
+        $(document).ready(function() {
 
-    <div id="elementH"></div>
+          $("#btnNo").click(function(e) {
+            var documentNo = document.getElementById("documentNo").value;
+            var absenceCode = 'AB';
+            console.log(documentNo);
+            console.log(absenceCode);
+            swal({
+                title: "คุณแน่นใจหรือไม่!",
+                text: "เปลี่ยนสถานะการลากิจจ่ายเงินเป็นไม่จ่ายเงิน",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+              })
+              .then((willChangStatus) => {
+                if (willChangStatus) {
+                  $.ajax({
+                    url: "http://10.2.2.5/sfi-hr/updateAseceCode.php",
+                    method: "POST",
+                    data: {
+                      documentNo: documentNo,
+                      absenceCode: absenceCode
+                    },
+                    success: function(data) {
+                      if (data == "true") {
+                        swal("เปลี่ยนสถานะเป็นไม่จ่ายเงินเรียบร้อย", {
+                          icon: "success",
+                        }).then(function() {
+                          console.log('refresh หน้าเว็บ');
+                          e.preventDefault();
+                          window.location.reload();
+                        })
+
+                      } else {
+                        swal("ไม่สารถมารถเปลี่ยนสถานะได้", {
+                          icon: "warning",
+                        });
+                      }
+                    }
+                  })
+
+                } else {
+                  swal("ยกเลิกการเปลี่ยนสถานะ");
+                }
+              });
+
+
+
+          });
+
+          $("#btnAprove").click(function(e) {
+            var documentNo = document.getElementById("documentNo").value;
+            var absenceCode = '02';
+            console.log(documentNo);
+            console.log(absenceCode);
+            swal({
+                title: "คุณแน่นใจหรือไม่!",
+                text: "เปลี่ยนสถานะการลากิจไม่จ่ายเงินเป็นจ่ายเงิน",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+              })
+              .then((willChangStatus) => {
+                if (willChangStatus) {
+                  $.ajax({
+                    url: "http://10.2.2.5/sfi-hr/updateAseceCode.php",
+                    method: "POST",
+                    data: {
+                      documentNo: documentNo,
+                      absenceCode: absenceCode
+                    },
+                    success: function(data) {
+                      if (data == "true") {
+                        swal("เปลี่ยนสถานะเป็นจ่ายเงินเรียบร้อย", {
+                          icon: "success",
+                        }).then(function() {
+                          console.log('refresh หน้าเว็บ');
+                          e.preventDefault();
+                          window.location.reload();
+                        })
+                      } else {
+                        swal("ไม่สารถมารถเปลี่ยนสถานะได้", {
+                          icon: "warning",
+                        });
+                      }
+                    }
+                  })
+
+                } else {
+                  swal("ยกเลิกการเปลี่ยนสถานะ");
+                }
+
+              });
+
+
+
+          });
+
+
+
+        });
+      </script>
+
+      <!-- <script>
+        function updateAseceCode() {
+
+          //e.preventDefault(); //ปิดการประพริบหน้าเว็บเมื่อมีการ Reset
+          var documentNo = document.getElementById("documentNo").value;
+          var absenceCode = 'AB';
+          console.log(documentNo);
+          console.log(absenceCode);
+
+          $.ajax({
+            url: "http://10.2.2.5/sfi-hr/updateAseceCode.php",
+            method: "POST",
+            data: {
+              documentNo: documentNo,
+              absenceCode: absenceCode
+            },
+            contentType: 'application/json; charset=utf-8', //ส่งข้อมูลเป็นก้อนทุกอย่างที่อยู่ในฟอร์ม
+            success: function(data) {
+              if (data == "true") {
+                alert("อนุมัติเรียบร้อย");
+                window.location.href = "index.php";
+              } else {
+                alert("ไม่สามารถอนุมัติได้");
+              }
+            }
+          })
+        }
+
+        // $(document).ready(function() {
+
+        //     $('#login-form').on('submit', function(e) {
+        //         e.preventDefault(); //ปิดการประพริบหน้าเว็บเมื่อมีการ Reset
+        //         var uid = document.getElementById("user").value;
+        //         var password = document.getElementById("password").value;
+        //         // console.log(uid);
+        //         // console.log(password);
+        //         $.ajax({
+        //             url: "login.php",
+        //             method: "POST",
+        //             data: {
+        //                 function: 'login',
+        //                 username: uid,
+        //                 password: password
+        //             }, //ส่งข้อมูลเป็นก้อนทุกอย่างที่อยู่ในฟอร์ม
+        //             success: function(data) {
+        //                 if (data == "true") {
+        //                     sessionStorage.setItem("login", "true");
+        //                     let personName = sessionStorage.getItem("login");
+        //                     console.log(personName);
+        //                     window.location.replace("http://10.2.2.5/contacts/home.php");
+        //                 } else {
+        //                     swal({
+        //                         title: " User หรือ Password ผิด",
+        //                         text: "กรุณากดปุ่มตกลง",
+        //                         icon: "error",
+        //                         button: "ตกลง",
+        //                     });
+        //                 }
+        //             }
+        //         });
+        //     });
+        // }
+        //);
+      </script> -->
 
 
 
@@ -199,10 +399,12 @@ require_once 'connect.php';
 
 
 
-    <script src="bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Option 2: Separate Popper and Bootstrap JS -->
-    <!--
+
+
+
+      <!-- Option 2: Separate Popper and Bootstrap JS -->
+      <!--
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
     -->

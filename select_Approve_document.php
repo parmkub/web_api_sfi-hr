@@ -27,6 +27,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     a.absence_day,
     a.absence_hour,
     a.delete_mark,
+    NVL((select c.first_name||' '||c.last_name from sf_per_employees_v c
+        where c.employee_code =  a.absence_review),'...')review,
+         NVL((select c.first_name||' '||c.last_name from sf_per_employees_v c
+        where c.employee_code =  a.absence_approve),'...')approve,
     a.absence_period,
     a.absence_status,
     a.absence_token,
@@ -46,6 +50,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     a.absence_day,
     a.absence_hour,
     a.delete_mark,
+   
+        a.absence_review,
+        a.absence_approve,
     a.absence_period,
     a.absence_status,
     a.absence_token,

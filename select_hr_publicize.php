@@ -31,7 +31,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         echo "Null";
     }
 
-
-
     oci_close($objConnect);
 }

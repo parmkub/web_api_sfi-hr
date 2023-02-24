@@ -24,7 +24,8 @@ $output = null;
                 LAST_UPDATE_DATE,
                 LAST_UPDATED_BY,
                 ABSENCE_PERIOD,
-                LEAVE_DESC) 
+                LEAVE_DESC,
+                ABSENCE_DOCUMENT) 
             VALUES ('".$row['ABSENCE_DATE']."',
                 '".$row['EMPLOYEE_CODE']."',
                 '".$row['ABSENCE_CODE']."',
@@ -37,7 +38,8 @@ $output = null;
                 SYSDATE,
                 '9999',
                 to_char(SYSDATE,'MON-YY'),
-                '".$row['ABSENCE_DETAIL']."')";
+                '".$row['ABSENCE_DETAIL']."',
+                '".$row['ABSENCE_DOCUMENT']."')";
             $s = oci_parse($objConnect, $insetSQL);
             $objExecute = oci_execute($s);
 

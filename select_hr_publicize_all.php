@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     // $location = $_GET['location'];
 
     $sql = "SELECT
-    id,publicize_title,thumnail
+    id,publicize_title,thumnail,WEBVIEWTYPE,PUBLICIZE_DETAIL
    FROM  sf_per_hr_publicize 
    where PUBLICIZE_TYPE = '$blogType'
    ORDER BY 1 desc";
