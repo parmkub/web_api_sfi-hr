@@ -31,7 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         a.absence_token,
         a.absence_detail,
         a.ABSENCE_DOCUMENT,
-        a.CREATION_DATE
+        a.CREATION_DATE,
+        a.STATUS_APPROVE
         FROM sf_per_absence_mobile a
         WHERE a.employee_code = '$empcode'
         AND SUBSTR(ABSENCE_DATE,8,2) = to_char(SYSDATE,'yy')
@@ -47,7 +48,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         a.absence_token,
         a.absence_detail,
         a.ABSENCE_DOCUMENT,
-        a.CREATION_DATE
+        a.CREATION_DATE,
+        a.STATUS_APPROVE
         ORDER by creation_date ASC";
    $response = oci_parse($objConnect, $sql,);
    $output = null;

@@ -6,7 +6,7 @@
         require_once 'connect.php';
         // $db = "(DESCRIPTION=(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = 10.2.1.13)(PORT = 1522)))(CONNECT_DATA=(SID=TEST)))";
         // $objConnect = oci_connect("sfi", "sfi", $db, 'AL32UTF8');
-        $strSQL = " SELECT  
+        $strSQL = "SELECT  
         empv.title || empv.first_name ||' '||empv.last_name name,
         empv.employee_code emp_code,
         empv.position_name position,
@@ -22,6 +22,7 @@
     WHERE empv.$positionGroup = '$positionCode'
     AND empv.resign_date IS NULL
     AND empv.employee_type_group = 'รายเดือน'
+    AND empv.company_code = 'SFI'
     ORDER BY empv.position_group_code  DESC";
     
         $response = oci_parse($objConnect, $strSQL,);

@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
     $empcode = $_GET['empcode'];
 
-    $sql = "SELECT absence_date,employee_code,absence_code,absence_day,absence_hour,absence_comment,delete_mark FROM sf_per_absence
+    $sql = "SELECT absence_date,employee_code,absence_code,absence_day,absence_hour,absence_comment,move_from_date,delete_mark FROM sf_per_absence
     WHERE employee_code = '$empcode'
     AND to_char(absence_date,'YY')=to_char(SYSDATE,'YY')
     ";

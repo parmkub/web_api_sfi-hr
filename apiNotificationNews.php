@@ -1,26 +1,36 @@
 <?php
-
+header('Access-Control-Allow-Origin: *');
 // Server key from Firebase Console
 define('API_ACCESS_KEY', 'AAAAtqupQ4g:APA91bEpxZr_oC3G13maJ_0YIwCGG5F0wkF0NynEHSrVoQ2Z71KDeMLo7YkMDgcGGOuGYSKlG-Axk5Wjr3my89A_1j4LmgAua4CyO3zsZ8xVHI184Q_GmxnGAvsn21V61sUnXcwUzLnq'); // Replace YOUR FIREBASE CLOUD MESSAGING API KEY with your Firebase Cloud Messaging server Key
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // POST values
-    $token = $_POST["token"];
+    $token = "";
     $title = $_POST["title"];
     $message = $_POST["message"];
-    $screen = $_POST["screen"];
-   
+    $pages = $_POST["pages"];
+    $id = $_POST["id"];
+    $webViewType = $_POST["webViewType"];
+    $publicizeDetail = $_POST["publicizeDetail"];
+
     $token = htmlspecialchars($token, ENT_COMPAT);
     $title = htmlspecialchars($title, ENT_COMPAT);
-    $screen = htmlspecialchars($screen, ENT_COMPAT);
     $message = htmlspecialchars($message, ENT_COMPAT);
+    $pages = htmlspecialchars($pages, ENT_COMPAT);
+    $id = htmlspecialchars($id, ENT_COMPAT);
+    $webViewType = htmlspecialchars($webViewType, ENT_COMPAT);
+    $publicizeDetail = htmlspecialchars($publicizeDetail, ENT_COMPAT);
 
     // Push Data's
     $data = array(
         "data" => array(
-            "screen" => "$screen",
+            "screen" => "$pages",
+            "id" => "$id",
+            "webViewType" => "$webViewType",
+            "publicizeDetail" => "$publicizeDetail",
         ),
+        "to" => "/topics/allDevices",
         "notification" => array(
             "body" => "$message",
             "title" => "$title",
@@ -29,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             "content_available"=> 'true',
             "priority" => 'high',
         ),
-        "to" => "$token",
+        
     );
 
     // Print Output in JSON Format

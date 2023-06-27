@@ -11,7 +11,7 @@ $output = null;
 
     if(oci_execute($response)){
         while($row =  oci_fetch_assoc($response)){
-            $insetSQL = "INSERT INTO sf_per_absence_test (
+            $insetSQL = "INSERT INTO sf_per_absence (
                 ABSENCE_DATE,
                 EMPLOYEE_CODE,
                 ABSENCE_CODE,

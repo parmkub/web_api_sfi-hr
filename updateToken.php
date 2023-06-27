@@ -5,7 +5,7 @@ use JetBrains\PhpStorm\Language;
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     //require_once 'connect.php';
-    require_once 'connect-test.php';
+    require_once 'connect.php';
     $empCode = $_POST['empCode'];
     $toKen = $_POST['toKen'];
     $nAme = $_POST['nAme'];

@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $s1 = oci_parse($objConnect, $sqlUpdate1);
         $objExecute1 = oci_execute($s1);
 
-        $sqlUpdate2 = "UPDATE sf_per_absence_test a  SET a.ABSENCE_CODE ='$absenceCode'
+        $sqlUpdate2 = "UPDATE sf_per_absence a  SET a.ABSENCE_CODE ='$absenceCode'
                WHERE a.ABSENCE_DOCUMENT = '$absenceDocument'";
         $s2 = oci_parse($objConnect, $sqlUpdate2);
         $objExecute2 = oci_execute($s2);

@@ -76,13 +76,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         ,null holiday_2end_date 
     ,case when pos.position_group_code like '01%'   Then 'Daily' Else 'Monthly' end group_employee
     ,NULL  position_f_group_name
-    from sfi.sf_per_stat_total tstat
-         ,SFI.SF_PER_EMPLOYEES emp
-    ,SFI.SF_PER_POSITION_MST POS
-         ,sfi.sf_per_sectdept_V sect
-    WHERE emp.employee_code = tstat.employee_code
-     and substr(emp.position_code,1,4) = sect.per_depart
-     and emp.position_code = pos.position_code
+    ,yholi.holiday_total
+
+from sfi.sf_per_stat_total tstat
+     ,SFI.SF_PER_EMPLOYEES emp
+,SFI.SF_PER_POSITION_MST POS
+     ,sfi.sf_per_sectdept_V sect
+     ,sfi.sf_per_yholiday yholi
+WHERE emp.employee_code = tstat.employee_code
+ and substr(emp.position_code,1,4) = sect.per_depart
+ and emp.position_code = pos.position_code
+and emp.employee_code = yholi.employee_code
+and yholi.holiday_num >0
+and TO_CHAR(TO_DATE(tstat.period_name,'MON-RR'),'RRRR') = yholi.year
     
     ---and emp.employee_code = '480001'
     GROUP BY  '<< Total >>'
@@ -100,7 +106,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                ,sect.depart_code
           ,sect.divi_code
            ,tstat.summer_date
-     ,case when pos.position_group_code like '01%'   Then 'Daily' Else 'Monthly' end  )a
+     ,case when pos.position_group_code like '01%'   Then 'Daily' Else 'Monthly' end  
+     ,yholi.holiday_total )a
      
      WHERE a.employee_code = '$empcode'
      AND a.fiscal_year = to_char(SYSDATE,'YYYY')";

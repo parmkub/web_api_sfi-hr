@@ -30,18 +30,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 // WHERE f.employee_code = '$empCode'
 // AND f.resign_date IS NULL";
 
-    $sql = "select 
+    $sql = "SELECT
+    *
+FROM
+(select 
 '0000' userid,
 UPPER(f.eng_first_name)username,
+f.first_name||' '||f.last_name name,
 f.employee_code empcode,
 f.position_group_code positiongroup,
 f.position_name positiongroupname,
 f.sect_code sectcode,
 f.divi_code divicode,
 f.depart_code departcode
-FROM sf_per_employees_v f where employee_code = '$empCode'
+FROM sf_per_employees_v f 
+where  f.resign_date is null
+AND f.depart_code = '0400'
+OR f.depart_code = '5200'
 AND f.resign_date is null
-";
+AND f.position_group_code > 020
+)a
+where a.empcode = '$empCode'";
 
     $s = oci_parse($objConnect, $sql);
     $objExecute = oci_execute($s);

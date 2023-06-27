@@ -36,7 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     a.absence_token,
     a.absence_detail,
     a.ABSENCE_DOCUMENT,
-    a.CREATION_DATE
+    a.CREATION_DATE,
+    a.STATUS_APPROVE
     FROM sf_per_absence_mobile a
     INNER JOIN sf_per_employees_v emp
     ON emp.employee_code = a.employee_code
@@ -58,7 +59,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     a.absence_token,
     a.absence_detail,
     a.ABSENCE_DOCUMENT,
-    a.CREATION_DATE
+    a.CREATION_DATE,
+    a.STATUS_APPROVE
     ORDER by creation_date ASC";
    $response = oci_parse($objConnect, $sql,);
    $output = null;
