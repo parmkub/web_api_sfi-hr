@@ -4,12 +4,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
     require_once 'connect.php';
     //require_once 'connect-test.php';
-    $blogType = $_GET['blogType'];
+    $username = $_GET['username'];
 
 
     // $location = $_GET['location'];
 
-    $sql = "SELECT id,publicize_title,thumnail,WEBVIEWTYPE,PUBLICIZE_DETAIL FROM  sf_per_hr_publicize where PUBLICIZE_TYPE = '$blogType' and status_app = 'Y' ORDER BY 1 desc";
+    $sql = "SELECT
+    employee_code FROM sf_per_employees_fnduser_v where user_name = '$username'";
     $response = oci_parse($objConnect, $sql,);
     $output = null;
 

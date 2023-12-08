@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
    ORDER BY 1 desc)a
    WHERE ROWNUM IN(1,2,3)
    AND PUBLICIZE_TYPE = 'news'
+   and status_app = 'Y'
    ORDER BY 1 desc";
     $response = oci_parse($objConnect, $sql,);
     $output = null;

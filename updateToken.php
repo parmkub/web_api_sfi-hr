@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if ($objResult) {
 
-        $sqlUpdate = "UPDATE sf_emp_mobile_token  SET NAME='$nAme',TOKEN='$toKen'
+        $sqlUpdate = "UPDATE sf_emp_mobile_token  SET NAME='$nAme',TOKEN='$toKen',LAST_UPDATE_DATE = sysdate
                 WHERE EMPCODE = '$empCode'";
         $s = oci_parse($objConnect, $sqlUpdate);
         $objExecute = oci_execute($s);

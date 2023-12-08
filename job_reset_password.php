@@ -9,16 +9,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $statusApprove = $_GET['statusApprove'];
     $columeApprove = $_GET['columeApprove'];
     $empCode =$_GET['empCode'];
-
-        if($columeApprove == 'ABSENCE_APPROVE' ){
-            $columeDate = 'a.DATE_APPROVE';
-        }else{
-            $columeDate = 'a.DATE_REVIEW';
-        }
-
   
 
-        $sqlUpdate = "UPDATE sf_per_absence_mobile a  SET a.absence_status ='$statusApprove',a.$columeApprove = '$empCode',a.STATUS_APPROVE = 'approved',$columeDate = SYSDATE
+        $sqlUpdate = "UPDATE sf_per_absence_chang a  SET a.absence_status ='$statusApprove',a.$columeApprove = '$empCode',a.STATUS_APPROVE = 'approved'
                WHERE a.ABSENCE_DOCUMENT = '$absenceDocument'";
         $s = oci_parse($objConnect, $sqlUpdate);
         $objExecute = oci_execute($s);

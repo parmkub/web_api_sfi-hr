@@ -1,5 +1,6 @@
-<?php 
+<?php
 $documentNo = $_GET['documentNo'];
+
 
 $sql = "SELECT Min(absence_date),
 Max(absence_date),
@@ -28,43 +29,49 @@ ABSENCE_APPROVE";
 $result = oci_parse($objConnect, $sql,);
 oci_execute($result);
 while (($row = oci_fetch_assoc($result)) != false) {
- $output = $row;
- 
+    $output = $row;
 }
-$documentNo = $output['ABSENCE_DOCUMENT'];
-$startDate = $output['MIN(ABSENCE_DATE)'];
-$endDate = $output['MAX(ABSENCE_DATE)'];
-$employeeName = $output['NAME'];
-$employeeCode = $output['EMPLOYEE_CODE'];
-$positionName = $output['POSITION_NAME'];
-$sectName = $output['SECT_NAME'];
-$diviName = $output['DIVI_NAME'];
-$departName = $output['DEPART_NAME'];
-$documentNo = $output['ABSENCE_DOCUMENT'];
-$creationDate = $output['CREATION_DATE'];
-$detail = $output['ABSENCE_DETAIL'];
-$review = $output['ABSENCE_REVIEW'];
-$approve = $output['ABSENCE_APPROVE'];
-$absenceCode = $output['ABSENCE_CODE'];
-$countDay = $output['DAY'];
-$countHour = $output['HOUR'];
-$showCount ='';
+if (!$output) {
+    echo 'false';
+    exit();
+} else {
+
+
+    $documentNo = $output['ABSENCE_DOCUMENT'];
+    $startDate = $output['MIN(ABSENCE_DATE)'];
+    $endDate = $output['MAX(ABSENCE_DATE)'];
+    $employeeName = $output['NAME'];
+    $employeeCode = $output['EMPLOYEE_CODE'];
+    $positionName = $output['POSITION_NAME'];
+    $sectName = $output['SECT_NAME'];
+    $diviName = $output['DIVI_NAME'];
+    $departName = $output['DEPART_NAME'];
+    $documentNo = $output['ABSENCE_DOCUMENT'];
+    $creationDate = $output['CREATION_DATE'];
+    $detail = $output['ABSENCE_DETAIL'];
+    $review = $output['ABSENCE_REVIEW'];
+    $approve = $output['ABSENCE_APPROVE'];
+    $absenceCode = $output['ABSENCE_CODE'];
+    $countDay = $output['DAY'];
+    $countHour = $output['HOUR'];
+    $showCount = '';
 
 
 
-$img = str_split($employeeCode,2);
- $ImgUrl = "http://10.2.2.5/img/sfi/".$img[0]."-".$img[1].$img[2].'.jpg';
- 
-if($absenceCode == "02"){
-    $absenceName = 'ลากิจจ่าย';
-}else if($absenceCode == "AB"){
-    $absenceName = 'ลากิจไม่จ่าย';
-}else{
-    $absenceName = 'ไม่มีข้อมูล';
-}
+    $img = str_split($employeeCode, 2);
+    $ImgUrl = "http://10.2.2.5/img/sfi/" . $img[0] . "-" . $img[1] . $img[2] . '.jpg';
 
-if($countDay >= 1){
-    $showCount = $countDay.' วัน';
-}else{
-    $showCount = $countHour.' ชั่วโมง';
+    if ($absenceCode == "02") {
+        $absenceName = 'ลากิจจ่าย';
+    } else if ($absenceCode == "AB") {
+        $absenceName = 'ลากิจไม่จ่าย';
+    } else {
+        $absenceName = 'ไม่มีข้อมูล';
+    }
+
+    if ($countDay >= 1) {
+        $showCount = $countDay . ' วัน';
+    } else {
+        $showCount = $countHour . ' ชั่วโมง';
+    }
 }

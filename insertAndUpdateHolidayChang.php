@@ -54,15 +54,28 @@ $output = null;
                 and EMPLOYEE_CODE = '$row[EMPLOYEE_CODE]'";
                
             }else if($row['ABSENCE_HOUR'] == "4"){
-                $updateSQL = "UPDATE sf_per_absence SET ABSENCE_DAY = '0',ABSENCE_HOUR = '4',LAST_UPDATE_DATE = SYSDATE
-                WHERE ABSENCE_DATE = '$row[ABSENCE_DATE_FROM]' AND EMPLOYEE_CODE = '$row[EMPLOYEE_CODE]'";
+                $checkSQL = "SELECT * FROM sf_per_absence WHERE ABSENCE_DATE = '$row[ABSENCE_DATE_FROM]' AND EMPLOYEE_CODE = '$row[EMPLOYEE_CODE]'";
+
+                $response2 = oci_parse($objConnect, $checkSQL,);
+                oci_execute($response2);
+                $row2 =  oci_fetch_assoc($response2);
+
+                if($row2['ABSENCE_HOUR'] == "4" && $row2['ABSENCE_DAY'] == "0"){
+                    $updateSQL = "UPDATE sf_per_absence SET absence_comment = '2',ABSENCE_BALANCE = 0, LAST_UPDATE_DATE = SYSDATE,LAST_UPDATED_BY = '9999'
+                    WHERE ABSENCE_DATE = '$row[ABSENCE_DATE_FROM]' AND EMPLOYEE_CODE = '$row[EMPLOYEE_CODE]'";
+                }else{
+                    $updateSQL = "UPDATE sf_per_absence SET ABSENCE_DAY = '0',ABSENCE_HOUR = '4',LAST_UPDATE_DATE = SYSDATE
+                    WHERE ABSENCE_DATE = '$row[ABSENCE_DATE_FROM]' AND EMPLOYEE_CODE = '$row[EMPLOYEE_CODE]'";
+                }
+            
+
+                // $updateSQL = "UPDATE sf_per_absence SET ABSENCE_DAY = '0',ABSENCE_HOUR = '4',LAST_UPDATE_DATE = SYSDATE
+                // WHERE ABSENCE_DATE = '$row[ABSENCE_DATE_FROM]' AND EMPLOYEE_CODE = '$row[EMPLOYEE_CODE]'";
             }
            // echo $updateSQL;
 
              $s1 = oci_parse($objConnect, $updateSQL);
             $objExecute2 = oci_execute($s1);
-
-            require_once 'updateOldDayChang.php';
 
 
             // echo $output[] = $row;

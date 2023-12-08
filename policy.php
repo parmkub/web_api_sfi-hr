@@ -42,10 +42,10 @@ require_once 'connect.php';
 </head>
 
 <body>
-  <?php include 'selectLagit.php'; ?>
+  <?php include 'selectChangHoliday.php'; ?>
 
   <div id="contnet">
-    <div class="container col-6 mt-5">
+    <div class="container col mt-5">
       <div class="card regular shadow">
         <div class="card-header mt-4 text-center">
           <div>
@@ -58,7 +58,7 @@ require_once 'connect.php';
         </div>
         <div class="card-body mt-2">
           <div class="text-center font-weight-bold">
-            <h4 class="font-weight-bold">ใบลากิจ</h4>
+            <h4 class="font-weight-bold">ใบเลื่อนวันหยุดลอย</h4>
           </div>
           <div class="row mt-3">
             <div class="col">
@@ -163,19 +163,14 @@ require_once 'connect.php';
         <div class="row">
           <div class="col">
             <div class="col mx-3">
-              <p>ประเภทการลา: </p><?php if ($absenceCode == '02') {
-                                    echo '<p style="color:green;">' . $absenceName . '</p>';
-                                  } else if ($absenceCode == 'AB') {
-                                    echo '<p style="color:#f72727;">' . $absenceName . '</p>';
-                                  }
-                                  ?>
+              <p>ได้รับการอนุมัติเลือนวันหยุด</p>
             </div>
 
             <div class="col mx-3">
-              <input type="hidden" id="startDate" value="<?php echo $startDate ?>">
-              <input type="hidden" id="endDate" value="<?php echo $endDate ?>">
-              <p>ตั้งแต่ <?php echo $startDate ?> ถึง <?php echo $endDate ?> </p>
-              <p><?php echo 'จำนวนวันลา ' . $showCount ?></p>
+              <input type="hidden" id="startDate" value="<?php echo $dateFrom ?>">
+              <input type="hidden" id="endDate" value="<?php echo $dateTo ?>">
+              <p>จาก <?php echo $dateFrom ?> เป็น <?php echo $dateTo ?> </p>
+              <p><?php echo 'จำนวนลา ' . $showCount ?></p>
             </div>
           </div>
           <div class="col-4 ">
@@ -189,29 +184,28 @@ require_once 'connect.php';
         <div id="diffDays"></div>
 
 
-        <div class="co-5 m-3">
+        <!-- <div class="co-5 m-3">
           <p>เหตุผล:</p>
 
           <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="รายละเอียด" disabled>
           <?php echo $detail ?>
            </textarea>
-        </div>
+        </div> -->
 
 
-        <div class="row m-3 ">
-          <div class="col text-center ">
+        <div class="row m-5 ">
+          <div class="col text-center mt-5">
             <p><?php echo 'ลงชื่อ ' . $review . ' ผู้ทบทวน' ?></p>
 
           </div>
-
-          <div class="col  text-center">
+          <div class="col  text-center mt-5">
             <p><?php echo 'ลงชื่อ ' . $approve . ' ผู้อนุมัติ' ?></p>
 
           </div>
         </div>
       </div>
 
-
+<!-- 
       <div class="row justify-content-center mt-3">
         <div class="col-5 d-grid ">
           <button id="btnNo" type="button" class="btn btn-info btn-xs " value='AbsenceCode Update'>ไม่อนุมัติ</button>
@@ -219,7 +213,7 @@ require_once 'connect.php';
         <div class="col-5 d-grid">
           <button id="btnAprove" type="button" class="btn btn-primary btn-lg " value='AbsenceCode Update'>อนุมัติ</button>
         </div>
-      </div>
+      </div> -->
 
       <script type="text/javascript">
         $(document).ready(function() {
@@ -389,18 +383,6 @@ require_once 'connect.php';
         // }
         //);
       </script> -->
-
-
-
-
-
-
-
-
-
-
-
-
 
 
       <!-- Option 2: Separate Popper and Bootstrap JS -->

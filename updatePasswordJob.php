@@ -2,12 +2,12 @@
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     require_once 'connect.php';
-    //require_once 'connect-test.php';
-    $absenceDocument = $_POST['absenceDocument'];
-    $reason = $_POST['reason'];
+    $user_id = $_POST['user_id'];
+    $password = $_POST['password'];
+    
 
-        $sqlUpdate = "UPDATE sf_per_absence_mobile a  SET a.DETAIL_APPROVE ='$reason',a.STATUS_APPROVE = 'disapprove', date_approve = SYSDATE, ABSENCE_STATUS = 3
-               WHERE a.ABSENCE_DOCUMENT = '$absenceDocument'";
+
+        $sqlUpdate = "UPDATE SF_PER_JOB_REGISTER a  SET a.PASSWORD ='$password' WHERE a.ID = '$user_id'";
         $s = oci_parse($objConnect, $sqlUpdate);
         $objExecute = oci_execute($s);
 

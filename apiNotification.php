@@ -1,8 +1,8 @@
 <?php
-
+header('Access-Control-Allow-Origin: *');
 // Server key from Firebase Console
 define('API_ACCESS_KEY', 'AAAAtqupQ4g:APA91bEpxZr_oC3G13maJ_0YIwCGG5F0wkF0NynEHSrVoQ2Z71KDeMLo7YkMDgcGGOuGYSKlG-Axk5Wjr3my89A_1j4LmgAua4CyO3zsZ8xVHI184Q_GmxnGAvsn21V61sUnXcwUzLnq'); // Replace YOUR FIREBASE CLOUD MESSAGING API KEY with your Firebase Cloud Messaging server Key
-
+$screen = '';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // POST values

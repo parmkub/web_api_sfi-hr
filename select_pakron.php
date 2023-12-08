@@ -25,6 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             THEN (nvl(SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),1,2)*8,0) +  nvl(SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),7,2),0))/8
         WHEN SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),1,2) = 9
             THEN (nvl(SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),1,2)*8,0) +  nvl(SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),7,2),0))/8
+        WHEN SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),1,2) is null
+            THEN 0
     END use_pakron,
     CASE
         WHEN SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),1,2) > 9
@@ -33,6 +35,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             THEN (yholi.holiday_total) - (nvl(SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),1,2)*8,0) +  nvl(SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),7,2),0))/8
         WHEN SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),1,2) = 9
             THEN (yholi.holiday_total) - (nvl(SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),1,2)*8,0) +  nvl(SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),7,2),0))/8
+        WHEN SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),1,2) is null
+            THEN (select 
+            yholi.holiday_total clain_pakron  FROM sfi.sf_per_stat_total tstat,
+           sfi.sf_per_yholiday yholi
+           where tstat.employee_code = '$empcode'
+           and tstat.employee_code = yholi.employee_code
+           and TO_CHAR(TO_DATE(tstat.period_name,'MON-RR'),'RRRR') = TO_CHAR(TO_DATE(SYSDATE,'DD-MON-RR'),'RRRR')
+           and TO_CHAR(TO_DATE(tstat.period_name,'MON-RR'),'RRRR') = yholi.year
+           GROUP by yholi.holiday_total)
     END diff_pakron
    FROM sfi.sf_per_stat_total tstat,
    sfi.sf_per_yholiday yholi
