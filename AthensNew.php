@@ -33,7 +33,7 @@ f.divi_code divicode,
 f.depart_code departcode
 FROM sf_per_employees_v f 
 where  f.resign_date is null
-AND f.nationality = 'ไทย'
+--AND f.nationality = 'ไทย'
 )a,sf_emp_mobile_token t
 where a.empcode = t.empcode
 and a.empcode = '$empCode'";

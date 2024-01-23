@@ -24,6 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     c.absence_token
 FROM sf_per_absence_chang c,sf_per_employees_v v
 WHERE c.employee_code = v.employee_code 
+and to_char(c.creation_date,'MM-YY')= to_char(SYSDATE,'MM-YY')
 and c.employee_code = '$empcode'
 order by c.creation_date desc";
    $response = oci_parse($objConnect, $sql,);

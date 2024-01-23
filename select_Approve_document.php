@@ -26,7 +26,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     emp.title||emp.first_name||' '||emp.last_name name,
     emp.position_group_code,
     a.absence_day,
-    a.absence_hour,
+     CASE  
+        WHEN MOD(a.absence_hour,1) > 0 THEN  SUBSTR(a.absence_hour, 1, 1) || '.5'
+        ELSE to_char(a.absence_hour)
+    END absence_hour,
     a.delete_mark,
     NVL((select c.first_name||' '||c.last_name from sf_per_employees_v c
         where c.employee_code =  a.absence_review),'...')review,
@@ -62,10 +65,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     a.ABSENCE_DOCUMENT,
     a.CREATION_DATE,
     a.STATUS_APPROVE
-    ORDER by creation_date ASC";
-    }else if($code == '3112'){// แผนก 3112  FG3 Cooling Freezer  และ  3113  FG3 แกะกุ้ง  
+    ORDER by absence_status DESC";
+    }else if($code == '3112'){// แผนก 3112  FG3 Cooling Freezer  และ  3113  FG3 แกะกุ้ง  และ 3116 
        
-
         $sql="SELECT 
         (SELECT MAX(b.absence_date)
         FROM sf_per_absence_mobile b
@@ -80,7 +82,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         emp.title||emp.first_name||' '||emp.last_name name,
         emp.position_group_code,
         a.absence_day,
-        a.absence_hour,
+         CASE  
+        WHEN MOD(a.absence_hour,1) > 0 THEN  SUBSTR(a.absence_hour, 1, 1) || '.5'
+        ELSE to_char(a.absence_hour)
+    END absence_hour,
         a.delete_mark,
         NVL((select c.first_name||' '||c.last_name from sf_per_employees_v c
             where c.employee_code =  a.absence_review),'...')review,
@@ -97,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         INNER JOIN sf_per_employees_v emp
         ON emp.employee_code = a.employee_code
         WHERE emp.position_group_code != '$positionGroupCode'
-        AND emp.$namePosiyer in('$code','3113')
+        AND emp.$namePosiyer in('$code','3113','3116')
         AND to_char(a.creation_date,'MM-YY')= to_char(SYSDATE,'MM-YY')
         GROUP BY a.employee_code,
         a.absence_code,
@@ -115,7 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         a.ABSENCE_DOCUMENT,
         a.CREATION_DATE,
         a.STATUS_APPROVE
-        ORDER by creation_date ASC";
+        ORDER by absence_status DESC";
 
     } 
     
@@ -135,7 +140,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     emp.title||emp.first_name||' '||emp.last_name name,
     emp.position_group_code,
     a.absence_day,
-    a.absence_hour,
+     CASE  
+        WHEN MOD(a.absence_hour,1) > 0 THEN  SUBSTR(a.absence_hour, 1, 1) || '.5'
+        ELSE to_char(a.absence_hour)
+    END absence_hour,
     a.delete_mark,
     NVL((select c.first_name||' '||c.last_name from sf_per_employees_v c
         where c.employee_code =  a.absence_review),'...')review,
@@ -171,7 +179,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     a.ABSENCE_DOCUMENT,
     a.CREATION_DATE,
     a.STATUS_APPROVE
-    ORDER by creation_date ASC";
+    ORDER by absence_status DESC";
     }
     $response = oci_parse($objConnect, $sql,);
     $output = null;

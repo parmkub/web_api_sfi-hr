@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         f.depart_code departcode
         FROM sf_per_employees_v f 
         where  f.resign_date is null
-        AND f.nationality = 'ไทย'
+        --AND f.nationality = 'ไทย'
         -- AND f.position_group_code > 020
         )a,sf_emp_mobile_token t
         where a.empcode = t.empcode
@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         f.depart_code departcode
         FROM sf_per_employees_v f 
         where  f.resign_date is null
-        AND f.nationality = 'ไทย'
+        --AND f.nationality = 'ไทย'
         )a
         where a.empcode = '$empCode'";
         

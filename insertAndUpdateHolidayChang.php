@@ -89,6 +89,7 @@ $output = null;
     else {
         echo "1";
     }
-
+oci_commit($objConnect);
 oci_close($objConnect);
+
 ?>

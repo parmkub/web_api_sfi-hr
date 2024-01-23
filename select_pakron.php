@@ -16,42 +16,42 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     // where employee_code = '$empcode'
     // and TO_CHAR(TO_DATE(tstat.period_name,'MON-RR'),'RRRR') = TO_CHAR(TO_DATE(SYSDATE,'DD-MON-RR'),'RRRR')";
 
-    $sql = "select 
-    yholi.holiday_total clain_pakron,
-    CASE
-        WHEN SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),1,2) > 9
-            THEN (nvl(SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),1,2)*8,0) +  nvl(SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),8,2),0))/8 
-        WHEN SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),1,2) < 9
-            THEN (nvl(SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),1,2)*8,0) +  nvl(SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),7,2),0))/8
-        WHEN SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),1,2) = 9
-            THEN (nvl(SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),1,2)*8,0) +  nvl(SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),7,2),0))/8
-        WHEN SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),1,2) is null
-            THEN 0
-    END use_pakron,
-    CASE
-        WHEN SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),1,2) > 9
-            THEN (yholi.holiday_total) - (nvl(SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),1,2)*8,0) +  nvl(SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),8,2),0))/8 
-        WHEN SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),1,2) < 9
-            THEN (yholi.holiday_total) - (nvl(SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),1,2)*8,0) +  nvl(SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),7,2),0))/8
-        WHEN SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),1,2) = 9
-            THEN (yholi.holiday_total) - (nvl(SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),1,2)*8,0) +  nvl(SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),7,2),0))/8
-        WHEN SUBSTR(sfi.sf_per_employee.trans_hrmn2(SUM(tstat.absence_29)),1,2) is null
-            THEN (select 
-            yholi.holiday_total clain_pakron  FROM sfi.sf_per_stat_total tstat,
-           sfi.sf_per_yholiday yholi
-           where tstat.employee_code = '$empcode'
-           and tstat.employee_code = yholi.employee_code
-           and TO_CHAR(TO_DATE(tstat.period_name,'MON-RR'),'RRRR') = TO_CHAR(TO_DATE(SYSDATE,'DD-MON-RR'),'RRRR')
-           and TO_CHAR(TO_DATE(tstat.period_name,'MON-RR'),'RRRR') = yholi.year
-           GROUP by yholi.holiday_total)
-    END diff_pakron
-   FROM sfi.sf_per_stat_total tstat,
-   sfi.sf_per_yholiday yholi
-   where tstat.employee_code = '$empcode'
-   and tstat.employee_code = yholi.employee_code
-   and TO_CHAR(TO_DATE(tstat.period_name,'MON-RR'),'RRRR') = TO_CHAR(TO_DATE(SYSDATE,'DD-MON-RR'),'RRRR')
-   and TO_CHAR(TO_DATE(tstat.period_name,'MON-RR'),'RRRR') = yholi.year
-   GROUP by yholi.holiday_total";
+    $sql = "SELECT
+    DISTINCT
+    (SELECT
+    nvl(holiday_num,0) + nvl(holiday_2num,0)
+         FROM sf_per_yholiday
+         where year = to_char(SYSDATE,'RRRR')
+         and employee_code = '$empcode'
+         )clain_pakron,
+     
+     (SELECT
+     nvl((sum(nvl(a.absence_day,0)*8)+sum(nvl(a.absence_hour,0)))/8 ,0)
+     
+         FROM sfi.sf_per_absence a    
+         where a.employee_code = '$empcode'
+         and a.absence_code = '29'
+         and TO_CHAR(absence_date,'RRRR') = to_char(SYSDATE,'RRRR')
+         and nvl(a.absence_comment,0) =0)USE_PAKRON,
+         
+         (SELECT
+         nvl(holiday_num,0) + nvl(holiday_2num,0)
+         FROM sf_per_yholiday
+         where year = to_char(SYSDATE,'RRRR')
+         and employee_code = '$empcode'
+         ) - (SELECT
+     nvl((sum(nvl(a.absence_day,0)*8)+sum(nvl(a.absence_hour,0)))/8,0)  
+         FROM sfi.sf_per_absence a    
+         where a.employee_code = '$empcode'
+         and a.absence_code = '29'
+         and TO_CHAR(absence_date,'RRRR') = TO_CHAR(SYSDATE,'RRRR')
+         and nvl(a.absence_comment,0) =0)DIFF_PAKRON
+    
+ FROM sf_per_yholiday a,sf_per_absence b
+ where b.employee_code = a.employee_code
+ and a.employee_code = '$empcode'
+ and a.year = TO_CHAR(SYSDATE,'RRRR')
+ and b.absence_code = '29'";
    $response = oci_parse($objConnect, $sql,);
    $output = null;
 

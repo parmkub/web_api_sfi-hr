@@ -28,7 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         emp.title||emp.first_name||' '||emp.last_name name,
         emp.position_group_code,
         a.absence_day,
-        a.absence_hour,
+         CASE  
+        WHEN MOD(a.absence_hour,1) > 0 THEN  SUBSTR(a.absence_hour, 1, 1) || '.5'
+        ELSE to_char(a.absence_hour)
+    END absence_hour,
         a.delete_mark,
         NVL((select c.first_name||' '||c.last_name from sf_per_employees_v c
             where c.employee_code =  a.absence_review),'...')review,
@@ -80,7 +83,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         emp.title||emp.first_name||' '||emp.last_name name,
         emp.position_group_code,
         a.absence_day,
-        a.absence_hour,
+         CASE  
+        WHEN MOD(a.absence_hour,1) > 0 THEN  SUBSTR(a.absence_hour, 1, 1) || '.5'
+        ELSE to_char(a.absence_hour)
+    END absence_hour,
         a.delete_mark,
         NVL((select c.first_name||' '||c.last_name from sf_per_employees_v c
             where c.employee_code =  a.absence_review),'...')review,
@@ -133,7 +139,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         emp.title||emp.first_name||' '||emp.last_name name,
         emp.position_group_code,
         a.absence_day,
-        a.absence_hour,
+         CASE  
+        WHEN MOD(a.absence_hour,1) > 0 THEN  SUBSTR(a.absence_hour, 1, 1) || '.5'
+        ELSE to_char(a.absence_hour)
+    END absence_hour,
         a.delete_mark,
         NVL((select c.first_name||' '||c.last_name from sf_per_employees_v c
             where c.employee_code =  a.absence_review),'...')review,
@@ -172,14 +181,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         ORDER by creation_date ASC";
 
     }
-    // แผนก 3112  FG3 Cooling Freezer  และ  3113  FG3 แกะกุ้ง  
+    // แผนก 3112  FG3 Cooling Freezer  และ  3113  FG3 แกะกุ้ง   และ 3116 
     else if($code == '3112'){
         $sql = "SELECT  
         a.START_DATE,a.END_DATE, 
         a.COUNT_DATE,b.first_name||' '|| 
         b.last_name name,a.EMPLOYEE_CODE, 
         a.ABSENCE_CODE,a.ABSENCE_DAY, 
-        a.ABSENCE_HOUR,a.DELETE_MARK, 
+         CASE  
+        WHEN MOD(a.absence_hour,1) > 0 THEN  SUBSTR(a.absence_hour, 1, 1) || '.5'
+        ELSE to_char(a.absence_hour)
+    END absence_hour,a.DELETE_MARK, 
         a.REVIEW, 
         a.APPROVE, 
         a.ABSENCE_PERIOD, 
@@ -196,11 +208,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         sf_per_absence_moble_v a, 
         sf_per_employees_v b  
         WHERE a.employee_code = b.employee_code  
-        and   b.sect_code IN ('3112','3113') and a.ABSENCE_STATUS < 2 
+        and   b.sect_code IN ('3112','3113','31116') and a.ABSENCE_STATUS < 2 
         and b.position_group_code < 032
         ORDER BY a.creation_date DESC";
 
-    } else if($code == '1200'){
+    } else if($code == '1200'){  //ฝ่ายโรงงาน 1200  คุณธรรมปพจน์ เอาเฉพาะหัวหน้าแผนกขึ้นไป
         $sql = "SELECT 
     (SELECT MAX(b.absence_date)
     FROM sf_per_absence_mobile b
@@ -215,7 +227,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     emp.title||emp.first_name||' '||emp.last_name name,
     emp.position_group_code,
     a.absence_day,
-    a.absence_hour,
+     CASE  
+        WHEN MOD(a.absence_hour,1) > 0 THEN  SUBSTR(a.absence_hour, 1, 1) || '.5'
+        ELSE to_char(a.absence_hour)
+    END absence_hour,
     a.delete_mark,
     NVL((select c.first_name||' '||c.last_name from sf_per_employees_v c
         where c.employee_code =  a.absence_review),'...')review,
@@ -273,7 +288,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     emp.title||emp.first_name||' '||emp.last_name name,
     emp.position_group_code,
     a.absence_day,
-    a.absence_hour,
+     CASE  
+        WHEN MOD(a.absence_hour,1) > 0 THEN  SUBSTR(a.absence_hour, 1, 1) || '.5'
+        ELSE to_char(a.absence_hour)
+    END absence_hour,
     a.delete_mark,
     NVL((select c.first_name||' '||c.last_name from sf_per_employees_v c
         where c.employee_code =  a.absence_review),'...')review,
