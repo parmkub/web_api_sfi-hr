@@ -1,5 +1,4 @@
 
-<!--หมายเหตุ เพิ่มส่วนงานกรุงเทพด้วยการส่งเมลล์เมื่อมีการอนุมัติใบลา 20-12-2023 -->
 
 <?php
 require_once 'connect.php';
@@ -46,6 +45,8 @@ WHERE a.ABSENCE_DOCUMENT = '$documentNo'";
 
                 $preiodDate = date('M-y', strtotime($row['ABSENCE_DATE']));
 
+                $absenceCode = $row['ABSENCE_CODE'];
+
                 $insetSQL = "INSERT INTO sf_per_absence (
             ABSENCE_DATE,
             EMPLOYEE_CODE,
@@ -82,26 +83,33 @@ WHERE a.ABSENCE_DOCUMENT = '$documentNo'";
             }
             if ($objExecute) {
 
-                $sql = "select DISTINCT
-                a.eng_title||a.eng_first_name ||'_'||a.eng_last_name name,
-                a.employee_code
-                from sf_per_employees_v a,sf_per_absence_mobile b
-                where a.employee_code = b.employee_code
-                and b.absence_document = '$documentNo'";
-                $response = oci_parse($objConnect, $sql,);
-                $output = null;
-                $employee_code = null;
-                $name = null;
+                // if($absenceCode =='02'){
+                //     echo 'true';
+                // }else{
+                    $sql = "select DISTINCT
+                    a.eng_title||a.eng_first_name ||'_'||a.eng_last_name name,
+                    a.employee_code
+                    from sf_per_employees_v a,sf_per_absence_mobile b
+                    where a.employee_code = b.employee_code
+                    and b.absence_document = '$documentNo'";
+                    $response = oci_parse($objConnect, $sql,);
+                    $output = null;
+                    $employee_code = null;
+                    $name = null;
+    
+                    if (oci_execute($response)) {
+                        while ($row =  oci_fetch_assoc($response)) {
+                            $employee_code = $row['EMPLOYEE_CODE'];
+                            $name = $row['NAME'];
+                        }
+                        sendEmailToHR($documentNo, $name,$employee_place,$absenceCode);
+                       
+                    // }
+                    echo 'true';
 
-                if (oci_execute($response)) {
-                    while ($row =  oci_fetch_assoc($response)) {
-                        $employee_code = $row['EMPLOYEE_CODE'];
-                        $name = $row['NAME'];
-                    }
-                    sendEmailToHR($documentNo, $name,$employee_place);
                 }
 
-                echo 'true';
+                
             } else {
                 echo 'false';
             }
@@ -131,9 +139,9 @@ WHERE a.ABSENCE_DOCUMENT = '$documentNo'";
             $name = $row['NAME'];
         }
     }
-    echo $employee_code;
-    echo $name;
-    sendEmailToHR($documentNo, $name,$employee_place);
+    //echo $employee_code;
+    //echo $name;
+    sendEmailToHR($documentNo, $name,$employee_place,$absenceCode);
     
 }
 oci_commit($objConnect);
@@ -141,36 +149,29 @@ oci_commit($objConnect);
 oci_close($objConnect);
 
 
-function sendEmailToHR($documentNo, $name,$employee_place)
+function sendEmailToHR($documentNo, $name,$employee_place,$absenceCode)
 {
-    if($employee_place == 'CHP' || $employee_place == 'FRM'){
-        $url = "http://61.7.142.47:3002/leavingAlert?documentNo=$documentNo&name=$name";
-    }
-    else if($employee_place == 'BKK'){
-        $url = "http://61.7.142.47:3002/sendMailHrBkk?documentNo=$documentNo&name=$name";
+ 
+        if($employee_place == 'CHP' || $employee_place == 'FRM'){
+            if($absenceCode == '02'){
+        
+                $url = "http://10.2.2.5:3001/sendemail?documentNo=$documentNo&name=$name";
+            }else{
+                $url = "http://10.2.2.5:3001/leavingAlert?documentNo=$documentNo&name=$name";
 
-    }
-    //echo $url;
-
-    $response = file_get_contents($url); // ทำคำขอ GET
-
-    // ตรวจสอบว่ามีข้อมูลที่ได้รับหรือไม่
-    if ($response !== false) {
-        // ทำอะไรกับข้อมูลที่ได้รับ เช่น แปลง JSON หรือประมวลผลข้อมูล
-        $decoded_response = json_decode($response, true); // แปลง JSON เป็น Associative Array
-
-        // ตรวจสอบว่าการแปลง JSON สำเร็จหรือไม่
-        if ($decoded_response !== null) {
-            // ทำอะไรกับข้อมูลที่ได้หลังจากแปลง JSON
-           // print_r($decoded_response);
-        } else {
-            // ไม่สามารถแปลง JSON ได้
-           // echo "ไม่สามารถแปลงข้อมูล JSON ได้";
+            }
         }
-    } else {
-        // ไม่สามารถรับข้อมูลจาก URL ได้
-        //echo "ไม่สามารถรับข้อมูลจาก URL ได้";
-    }
+        else if($employee_place == 'BKK'){
+            $url = "http://10.2.2.5:3001/sendMailHrBkk?documentNo=$documentNo&name=$name";
+    
+        }
+
+    
+
+  
+   $response = file_get_contents($url);
+   // echo $response;
+   
 }
 
 
