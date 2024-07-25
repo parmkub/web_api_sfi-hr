@@ -11,6 +11,7 @@
     "gulp": "^4.0.2"
   },
   "dependencies": {
+    "jquery": "^3.5.1",
     "pdfmake": "^0.2.5"
   },
   "description": ""

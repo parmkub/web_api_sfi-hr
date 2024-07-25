@@ -11,96 +11,50 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $positionGroupCode = $_GET['positionGroupCode'];
     // $selectStatus = $_GET['selectStatus'];
 
-    if ($code == '5230') {
-        $sql = "SELECT
-    emp.title||emp.first_name||' '||emp.last_name name,
-    emp.employee_code,
-    c.absence_status,
-    c.absence_date_from,
-    c.absence_date_to,
-    c.absence_document,
-    c.absence_day,
-    c.absence_hour,
-    nvl((select emp.first_name||' '||emp.last_name from sf_per_employees_v emp where emp.employee_code = c.absence_review) ,'...')absence_review,
-    nvl((select emp.first_name||' '||emp.last_name from sf_per_employees_v emp where emp.employee_code = c.absence_approve) ,'...')absence_approve, 
-    c.status_approve,
-    c.creation_date,
-    c.absence_token
-FROM sf_per_absence_chang c,
-sf_per_employees_v emp
-WHERE c.employee_code = emp.employee_code
-and emp.position_group_code != '$positionGroupCode'
-and emp.$namePosiyer in('$code','5240')
-and to_char(c.creation_date,'MM-YY')= to_char(SYSDATE,'MM-YY')
-order by c.creation_date desc";
-    } else if ($code == '5300') { //ส่วนงานคุณอรุณี ดูแลสามฝ่าย 5300,7200,5100
-        $sql = "SELECT
-        emp.title||emp.first_name||' '||emp.last_name name,
-        emp.employee_code,
-        c.absence_status,
-        c.absence_date_from,
-        c.absence_date_to,
-        c.absence_document,
-        c.absence_day,
-        c.absence_hour,
-        nvl((select emp.first_name||' '||emp.last_name from sf_per_employees_v emp where emp.employee_code = c.absence_review) ,'...')absence_review,
-        nvl((select emp.first_name||' '||emp.last_name from sf_per_employees_v emp where emp.employee_code = c.absence_approve) ,'...')absence_approve, 
-        c.status_approve,
-        c.creation_date,
-        c.absence_token
-    FROM sf_per_absence_chang c,
-    sf_per_employees_v emp
-    WHERE c.employee_code = emp.employee_code
-    and emp.position_group_code != '$positionGroupCode'
-    and emp.$namePosiyer in('$code','7200','5100')
-    and to_char(c.creation_date,'MM-YY')= to_char(SYSDATE,'MM-YY')
-    order by c.creation_date desc";
-    }else if ($code == '7180') { //ส่วนงานคุณอรุณี ดูแลสามฝ่าย 5300,7200,5100
-        $sql = "SELECT
-        emp.title||emp.first_name||' '||emp.last_name name,
-        emp.employee_code,
-        c.absence_status,
-        c.absence_date_from,
-        c.absence_date_to,
-        c.absence_document,
-        c.absence_day,
-        c.absence_hour,
-        nvl((select emp.first_name||' '||emp.last_name from sf_per_employees_v emp where emp.employee_code = c.absence_review) ,'...')absence_review,
-        nvl((select emp.first_name||' '||emp.last_name from sf_per_employees_v emp where emp.employee_code = c.absence_approve) ,'...')absence_approve, 
-        c.status_approve,
-        c.creation_date,
-        c.absence_token
-    FROM sf_per_absence_chang c,
-    sf_per_employees_v emp
-    WHERE c.employee_code = emp.employee_code
-    and emp.position_group_code != '$positionGroupCode'
-    and emp.$namePosiyer in('$code','7170')
-    and to_char(c.creation_date,'MM-YY')= to_char(SYSDATE,'MM-YY')
-    order by c.creation_date desc";
-    } else {
-        $sql = "SELECT
-    emp.title||emp.first_name||' '||emp.last_name name,
-    emp.employee_code,
-    c.absence_status,
-    c.absence_date_from,
-    c.absence_date_to,
-    c.absence_document,
-    c.absence_day,
-    c.absence_hour,
-    nvl((select emp.first_name||' '||emp.last_name from sf_per_employees_v emp where emp.employee_code = c.absence_review) ,'...')absence_review,
-    nvl((select emp.first_name||' '||emp.last_name from sf_per_employees_v emp where emp.employee_code = c.absence_approve) ,'...')absence_approve, 
-    c.status_approve,
-    c.creation_date,
-    c.absence_token
-FROM sf_per_absence_chang c,
-sf_per_employees_v emp
-WHERE c.employee_code = emp.employee_code
-and emp.position_group_code != '$positionGroupCode'
-and emp.$namePosiyer = '$code'
-and to_char(c.creation_date,'MM-YY')= to_char(SYSDATE,'MM-YY')
-order by c.creation_date desc";
+    $inPosition = array();
+    $sqlGetPosition = "select $namePosiyer FROM sf_per_employees_dup_v where employee_code = (SELECT
+                        employee_code
+                        FROM sf_per_employees_dup_v
+                        where $namePosiyer = '$code'
+                        and position_group_code = '$positionGroupCode'
+                        and resign_date is null)";
+
+                     //echo $sqlGetPosition;
+    $response = oci_parse($objConnect, $sqlGetPosition);
+    oci_execute($response);
+    while ($row = oci_fetch_array($response)) {
+        $inPosition[] = $row[0];
     }
 
+    $quoteArray = array_map(function ($value) {
+        return "'" . $value . "'";
+    }, $inPosition);
+
+    // ใช้ implode เพื่อรวมค่าทั้งหมดใน array ให้เป็น string โดยคั่นด้วย comma
+    $stringInPosition = "in (" . implode(",", $quoteArray) . ")";
+
+    $sql = "SELECT
+    emp.title||emp.first_name||' '||emp.last_name name,
+    emp.employee_code,
+    c.absence_status,
+    c.absence_date_from,
+    c.absence_date_to,
+    c.absence_document,
+    c.absence_day,
+    c.absence_hour,
+    nvl((select emp.first_name||' '||emp.last_name from sf_per_employees_v emp where emp.employee_code = c.absence_review) ,'...')absence_review,
+    nvl((select emp.first_name||' '||emp.last_name from sf_per_employees_v emp where emp.employee_code = c.absence_approve) ,'...')absence_approve, 
+    c.status_approve,
+    c.creation_date,
+    c.absence_token
+FROM sf_per_absence_chang c,
+sf_per_employees_v emp
+WHERE c.employee_code = emp.employee_code
+and emp.position_group_code != '$positionGroupCode'
+and emp.$namePosiyer $stringInPosition
+and to_char(c.creation_date,'MM-YY')= to_char(SYSDATE,'MM-YY')
+order by c.creation_date desc";
+//echo $sql;
 
     $response = oci_parse($objConnect, $sql,);
     $output = null;
