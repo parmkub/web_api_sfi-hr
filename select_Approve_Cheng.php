@@ -12,14 +12,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     // $selectStatus = $_GET['selectStatus'];
 
     $inPosition = array();
-    $sqlGetPosition = "select $namePosiyer FROM sf_per_employees_dup_v where employee_code = (SELECT
+     // ดึงรหัสพนักงาน
+    $sqlGetEmpCode = "SELECT
                         employee_code
-                        FROM sf_per_employees_dup_v
+                        FROM sf_per_employees_v
                         where $namePosiyer = '$code'
                         and position_group_code = '$positionGroupCode'
-                        and resign_date is null)";
+                        and resign_date is null";
+    //echo $sqlGetEmpCode;
+    $response = oci_parse($objConnect, $sqlGetEmpCode);
+    oci_execute($response);
+    while ($row = oci_fetch_array($response)) {
+        $empCode = $row[0];
+    }
+    
 
-                     //echo $sqlGetPosition;
+    $sqlGetPosition = "select $namePosiyer FROM sf_per_employees_dup_v where employee_code = '$empCode'";
+
+    //echo $sqlGetPosition;
     $response = oci_parse($objConnect, $sqlGetPosition);
     oci_execute($response);
     while ($row = oci_fetch_array($response)) {
@@ -33,7 +43,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     // ใช้ implode เพื่อรวมค่าทั้งหมดใน array ให้เป็น string โดยคั่นด้วย comma
     $stringInPosition = "in (" . implode(",", $quoteArray) . ")";
 
-    $sql = "SELECT
+    if ($code == '1200') { //ฝ่ายโรงงาน
+        $sql = "SELECT
+        emp.title||emp.first_name||' '||emp.last_name name,
+        emp.employee_code,
+        c.absence_status,
+        c.absence_date_from,
+        c.absence_date_to,
+        c.absence_document,
+        c.absence_day,
+        c.absence_hour,
+        nvl((select emp.first_name||' '||emp.last_name from sf_per_employees_v emp where emp.employee_code = c.absence_review) ,'...')absence_review,
+        nvl((select emp.first_name||' '||emp.last_name from sf_per_employees_v emp where emp.employee_code = c.absence_approve) ,'...')absence_approve, 
+        c.status_approve,
+        c.creation_date,
+        c.absence_token
+    FROM sf_per_absence_chang c,
+    sf_per_employees_v emp
+    WHERE c.employee_code = emp.employee_code
+    and emp.position_group_code != '$positionGroupCode'
+    and emp.$namePosiyer in('$code')
+    and emp.position_group_code > 031
+    and to_char(c.creation_date,'MM-YY')= to_char(SYSDATE,'MM-YY')
+    order by c.creation_date desc";
+    } else {
+
+        $sql = "SELECT
     emp.title||emp.first_name||' '||emp.last_name name,
     emp.employee_code,
     c.absence_status,
@@ -54,7 +89,8 @@ and emp.position_group_code != '$positionGroupCode'
 and emp.$namePosiyer $stringInPosition
 and to_char(c.creation_date,'MM-YY')= to_char(SYSDATE,'MM-YY')
 order by c.creation_date desc";
-//echo $sql;
+    }
+    //echo $sql;
 
     $response = oci_parse($objConnect, $sql,);
     $output = null;

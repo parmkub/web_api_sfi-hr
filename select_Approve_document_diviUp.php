@@ -11,13 +11,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $namePosiyer = $_GET['namePosiyer'];
     $positionGroupCode = $_GET['positionGroupCode'];
 
+    //echo $code;
+
     $inPosition = array();
-    $sqlGetPosition = "select $namePosiyer FROM sf_per_employees_dup_v where employee_code = (SELECT
+
+    // ดึงรหัสพนักงาน
+    $sqlGetEmpCode = "SELECT
                         employee_code
-                        FROM sf_per_employees_dup_v
+                        FROM sf_per_employees_v
                         where $namePosiyer = '$code'
                         and position_group_code = '$positionGroupCode'
-                        and resign_date is null)";
+                        and resign_date is null";
+    //echo $sqlGetEmpCode;
+    $response = oci_parse($objConnect, $sqlGetEmpCode);
+    oci_execute($response);
+    while ($row = oci_fetch_array($response)) {
+        $empCode = $row[0];
+    }
+
+    // ดึงตำแหน่งพนักงานที่รับผิดชอบ
+    $sqlGetPosition = "select $namePosiyer FROM sf_per_employees_dup_v where employee_code = '$empCode'";
+                        //echo $sqlGetPosition;
     $response = oci_parse($objConnect, $sqlGetPosition);
     oci_execute($response);
     while ($row = oci_fetch_array($response)) {
@@ -143,6 +157,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         a.CREATION_DATE,
         a.STATUS_APPROVE
         ORDER by creation_date ASC";
+
+        //echo $sql;
     }
 
     $response = oci_parse($objConnect, $sql,);
